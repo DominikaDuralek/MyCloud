@@ -2,6 +2,8 @@
 <head><title>Durałek</title></head>
 <body>
 	Zadanie 4. MyCloud + Github<br />
-	<a href ="index1.php">index1</a><br />
+	<a href ="logowanie.php">Logowanie</a><br />
+	<a href ="logout.php">Wylogowanie</a><br />
+	<a href ="rejestruj.php">Rejestracja</a><br />
 </body>
 </html>
