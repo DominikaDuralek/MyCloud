@@ -2,7 +2,7 @@
 session_start(); // zapewnia dostęp do zmienny sesyjnych w danym pliku
 if (!isset($_SESSION['loggedin']))
 {
-	header('Location: index12.php');
+	header('Location: logowanie.php');
 	exit();
 }
 ?>
@@ -61,7 +61,7 @@ if (!isset($_SESSION['loggedin']))
 		$java_enabled = "<script>document.write(navigator.javaEnabled());</script>";
 		$browser_language = "<script>document.write(navigator.language);</script>";
 
-		$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur', '6D6zB4WuURKzU@h', 'server701675_domdur'); // połączenie z BD	
+		$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD	
 		if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
 
 		$username =  $_SESSION['username'];
@@ -99,9 +99,6 @@ if (!isset($_SESSION['loggedin']))
 			echo "<td>" .$browser_language."</td>";
 		echo "</table><br />";
 		
-		echo "<a href ='index.php'>Strona główna zadania</a><br />";
-		echo "<a href ='board.php'>Komunikaty użytkownika</a><br />";
-		
 		//dane o poprzednich zalogowaniach
 		echo "<br />Poprzednie zalogowania użytkowników:<br />";
 		
@@ -137,6 +134,7 @@ if (!isset($_SESSION['loggedin']))
 		mysqli_close($link);
 	?>
 	
+	<a href ='index.php'>Strona główna zadania</a><br />
 	<a href ="logout.php">Wyloguj</a><br />
 </BODY>
 </HTML>

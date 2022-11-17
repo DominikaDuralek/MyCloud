@@ -3,7 +3,6 @@ error_reporting(0);
 $user = htmlentities ($_POST['user'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmiennej $user
 session_start();
 $_SESSION['username'] = $user;
-
 $pass = htmlentities ($_POST['pass'], ENT_QUOTES, "UTF-8"); // rozbrojenie potencjalnej bomby w zmiennej $pass
 $link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD
 if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
@@ -14,7 +13,12 @@ $rekord = mysqli_fetch_array($result); // wiersza z BD, struktura zmiennej jak w
 if(!$rekord) // jeśli brak, to nie ma użytkownika o podanym loginie
 {
 	session_start();
-	$_SESSION['loginDisabled'] = time();
+	$_SESSION['loginAttempts'] += 1;
+	
+	if($_SESSION['loginAttempts'] >= 3){
+		$_SESSION['loginDisabled'] = time();	
+	}
+
 	mysqli_close($link);
 	header('Location: logowanie.php');
 }
@@ -59,7 +63,12 @@ else
 	else // błędne hasło
 	{
 		session_start();
-		$_SESSION['loginDisabled'] = time();
+		$_SESSION['loginAttempts'] += 1;
+	
+		if($_SESSION['loginAttempts'] >= 3){
+			$_SESSION['loginDisabled'] = time();	
+		}
+		
 		mysqli_close($link);
 		header('Location: logowanie.php');
 	}

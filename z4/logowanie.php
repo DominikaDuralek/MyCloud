@@ -1,9 +1,16 @@
 <?php
 session_start();
-if(isset($_SESSION['loginDisabled']))
+
+if(!isset($_SESSION['loginAttempts'])){
+	$_SESSION['loginAttempts'] = 0;
+}
+
+
+if(isset($_SESSION['loginDisabled'])) //jesli login aktualnie zablokowany
 {
-	if(time() - $_SESSION['loginDisabled'] > 60)
+	if(time() - $_SESSION['loginDisabled'] > 60) //jesli czas juz minal
 	{
+		$_SESSION['loginAttempts'] = 0;
 		unset($_SESSION['loginDisabled']);
 	}
 }
@@ -32,8 +39,10 @@ if(isset($_SESSION['loginDisabled']))
 			?>
 			<input type="submit" value="Send" />
 			<?php
+			echo "Nieudane próby zalogowania: " . $_SESSION['loginAttempts'];
 		}
 		?>
+		<br>
 		<a href ="rejestruj.php">Rejestracja</a><br />
 		<a href ='index.php'>Strona główna zadania</a><br />
 	</form>
