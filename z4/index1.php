@@ -131,10 +131,17 @@ if (!isset($_SESSION['loggedin']))
 		}
 		echo "</table><br />";
 
+		$breakins = mysqli_query($link, "SELECT * FROM break_ins WHERE username='$username' ORDER BY datetime DESC LIMIT 1"); // wiersze, w którym login=login z formularza
+		foreach ($breakins as $row) {
+			if($row['datetime'] != ""){
+				echo "<p style='color: red';>Ostatnia próba włamania: " . $row['datetime'] . " ip: " . $row['ip'] . "</p>";			
+			}
+		}
+		
 		mysqli_close($link);
 	?>
-	
+	<br>
 	<a href ='index.php'>Strona główna zadania</a><br />
-	<a href ="logout.php">Wyloguj</a><br />
+	<a href ='logout.php'>Wyloguj</a><br />
 </BODY>
 </HTML>

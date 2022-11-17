@@ -20,7 +20,7 @@ if(!$rekord) // jeśli brak, to nie ma użytkownika o podanym loginie
 	
 	if($_SESSION['loginAttempts'] >= 3){
 		$_SESSION['loginDisabled'] = time();	
-		$sql = "INSERT INTO break_ins (datetime, ip) VALUES ('$datetime', '$ipaddress')";
+		$sql = "INSERT INTO break_ins (datetime, ip, username) VALUES ('$datetime', '$ipaddress', '$user')";
 		mysqli_query($link, $sql);
 	}
 
@@ -72,7 +72,7 @@ else
 	
 		if($_SESSION['loginAttempts'] >= 3){
 			$_SESSION['loginDisabled'] = time();
-			$sql = "INSERT INTO break_ins (datetime, ip) VALUES ('$datetime', '$ipaddress')";
+			$sql = "INSERT INTO break_ins (datetime, ip, username) VALUES ('$datetime', '$ipaddress', '$user')";
 			mysqli_query($link, $sql);			
 		}
 		
