@@ -9,7 +9,15 @@ mysqli_query($link, "SET NAMES 'utf8'"); // ustawienie polskich znaków
 $result = mysqli_query($link, "SELECT * FROM users WHERE username='$user'"); // wiersza, w którym login=login z formularza
 $rekord = mysqli_fetch_array($result); // wiersza z BD, struktura zmiennej jak w BD
 
-if($pass !== $confirm_pass) //czy hasło zostało wpisane poprawnie 2 razy
+if(str_contains($_POST['user'], '<') || str_contains($_POST['user'], '>') || str_contains($_POST['user'], ':') || 
+str_contains($_POST['user'], '"') || str_contains($_POST['user'], '/') || str_contains($_POST['user'], '\\') || 
+str_contains($_POST['user'], '|') || str_contains($_POST['user'], '?') || str_contains($_POST['user'], '*')){ 
+	?>
+	<script>alert("Niedozwolony znak! (< > : '' / \ | ? *)")</script>
+	<a href="rejestruj.php">Poprzednia strona</a>
+	<?php
+}
+else if($pass !== $confirm_pass) //czy hasło zostało wpisane poprawnie 2 razy
 {
 	echo "Hasła niezgodne!";
 	echo "<br /><a href ='rejestruj.php'>Rejestracja</a>";
