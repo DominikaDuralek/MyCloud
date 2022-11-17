@@ -10,6 +10,9 @@ mysqli_query($link, "SET NAMES 'utf8'"); // ustawienie polskich znaków
 $result = mysqli_query($link, "SELECT * FROM users WHERE username='$user'"); // wiersza, w którym login=login z formularza
 $rekord = mysqli_fetch_array($result); // wiersza z BD, struktura zmiennej jak w BD
 
+$ipaddress = $_SERVER["REMOTE_ADDR"];
+$datetime = date('Y-m-d H:i:s');
+
 if(!$rekord) // jeśli brak, to nie ma użytkownika o podanym loginie
 {
 	session_start();
@@ -17,6 +20,8 @@ if(!$rekord) // jeśli brak, to nie ma użytkownika o podanym loginie
 	
 	if($_SESSION['loginAttempts'] >= 3){
 		$_SESSION['loginDisabled'] = time();	
+		$sql = "INSERT INTO break_ins (datetime, ip) VALUES ('$datetime', '$ipaddress')";
+		mysqli_query($link, $sql);
 	}
 
 	mysqli_close($link);
@@ -66,7 +71,9 @@ else
 		$_SESSION['loginAttempts'] += 1;
 	
 		if($_SESSION['loginAttempts'] >= 3){
-			$_SESSION['loginDisabled'] = time();	
+			$_SESSION['loginDisabled'] = time();
+			$sql = "INSERT INTO break_ins (datetime, ip) VALUES ('$datetime', '$ipaddress')";
+			mysqli_query($link, $sql);			
 		}
 		
 		mysqli_close($link);
