@@ -25,7 +25,7 @@ function get_browser_name() {
 }
 $browser_name = get_browser_name(); //nazwa przegladarki
 		
-$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD
+$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur', '6D6zB4WuURKzU@h', 'server701675_domdur'); // połączenie z BD
 if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
 
 session_start();

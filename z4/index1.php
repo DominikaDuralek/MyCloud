@@ -99,38 +99,47 @@ if (!isset($_SESSION['loggedin']))
 			echo "<td>" .$browser_language."</td>";
 		echo "</table><br />";
 		
-		//dane o poprzednich zalogowaniach
-		echo "<br />Poprzednie zalogowania użytkowników:<br />";
+		$main_dir = $username . '/'; //katalog macierzysty zalogowanego uzytkownika
+		?>
 		
-		echo "<table border='1'>
-		<tr>
-		<th>ipaddress</th>
-		<th>datetime</th>
-		<th>username</th>
-		<th>browser</th>
-		<th>screen resolution</th>
-		<th>browser resolution</th>
-		<th>colors</th>
-		<th>cookies enabled</th>
-		<th>java enabled</th>
-		<th>browser language</th>
-		</tr>";
+		<br><form action="index1.php" method="post">
+		<input type="submit" name="makedir" value="Nowy katalog" />
+		</form><br>
+				
+		<?php
+		    if($_SERVER['REQUEST_METHOD'] == "POST" and isset($_POST['makedir']))
+			{
+				make_dir();
+			}
+			function make_dir() { //funkcja do tworzenia nowego katalogu
+				echo "<br>Nazwa nowego katalogu<form action='newdir.php' method='post'>
+						<input type='text' name='dir_name' maxlength='20' size='20'>
+							<input type='submit' value='Send'/>
+						</form><br>";
+			}
+			
+		//lista katalogow uzytkownika
+		echo "<br>Lista katalogów użytkownika: <br>";
 		
-		foreach ($result as $row) { //wyswietlenie wszystkich odpowiednich rekordow z bazy
-			echo "<tr>";
-			echo "<td>" .$row['ipaddress']."</td>";
-			echo "<td>" .$row['datetime']."</td>";
-			echo "<td>" .$row['username']."</td>";
-			echo "<td>" .$row['browser']."</td>";
-			echo "<td>" .$row['screen_resolution']."</td>";
-			echo "<td>" .$row['browser_resolution']."</td>";
-			echo "<td>" .$row['colors']."</td>";
-			echo "<td>" .$row['cookies_enabled']."</td>";
-			echo "<td>" .$row['java_enabled']."</td>";
-			echo "<td>" .$row['browser_language']."</td>";	
+        $main_dir_content = array_filter(glob($main_dir . "*")); //wszystko, co znajduje sie w katalogu
+		print_r($files);
+		
+		echo $main_dir . "<br>";
+		foreach ($main_dir_content as $content) {
+			
+			echo "&ensp;" . $content . "<br>"; //&ensp - duza spacja
+			
+			if(count(glob($content . '/*')) !== 0){
+				$sub_dir_content = array_filter(glob($content . '/*')); //wszystko, co znajduje sie w podkatalogu
+				foreach ($sub_dir_content as $sub_content) {
+					echo "&ensp;&ensp;" . $sub_content . "<br>";
+				}
+			}
+		
 		}
-		echo "</table><br />";
-
+			
+		
+		//informacja o ostatniej probie wlamania sie na konto
 		$breakins = mysqli_query($link, "SELECT * FROM break_ins WHERE username='$username' ORDER BY datetime DESC LIMIT 1"); // wiersze, w którym login=login z formularza
 		foreach ($breakins as $row) {
 			if($row['datetime'] != ""){
