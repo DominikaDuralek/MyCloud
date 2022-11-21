@@ -119,15 +119,30 @@ if (!isset($_SESSION['loggedin']))
 			}
 			
 		//lista katalogow uzytkownika
+		if(!isset($_SESSION['current_dir'])){
+			$_SESSION['current_dir'] = $main_dir;
+		}
+		else{
+			echo "Aktualny katalog: " . $_SESSION['current_dir'] . "<br>";
+		}
+		
+		echo "<form action='addfile.php' method='post' enctype='multipart/form-data'>
+					Nowy plik: <input type='file' name='uploaded_file' id='uploaded_file'><br>
+					<input type='submit' value='Send'/>
+			  </form>";
+		
 		echo "<br>Lista katalogów użytkownika: <br>";
 		
         $main_dir_content = array_filter(glob($main_dir . "*")); //wszystko, co znajduje sie w katalogu
-		print_r($files);
 		
-		echo $main_dir . "<br>";
+		echo "<a href ='movedir.php?current_dir=$main_dir'>" . $main_dir . "<a><br>";
 		foreach ($main_dir_content as $content) {
-			
-			echo "&ensp;" . $content . "<br>"; //&ensp - duza spacja
+			if(is_dir($content)){
+				echo "&ensp;<a href ='movedir.php?current_dir=$content'>" . $content . "</a><br>"; //&ensp - duza spacja		
+			}
+			else{
+				echo "&ensp;" . $content . "<br>";			
+			}
 			
 			if(count(glob($content . '/*')) !== 0){
 				$sub_dir_content = array_filter(glob($content . '/*')); //wszystko, co znajduje sie w podkatalogu
