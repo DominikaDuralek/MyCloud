@@ -1,4 +1,5 @@
 <?php
+	//skrypt dodajacy pliki do katalogu
 	session_start();
 	$user = $_SESSION['username']; //zalogowany uzytkownik
 	$datetime = date('Y-m-d H:i:s');
@@ -20,7 +21,7 @@
 		
 		$file_name = $_FILES["uploaded_file"]["name"];
 		$file_extension = pathinfo($_FILES["uploaded_file"]["name"], PATHINFO_EXTENSION); //rozszerzenie pliku
-		if(file_exists($_FILES['uploaded_file']['tmp_name'])){$file_target_location = $target_dir . '/' . $file_name;}
+		if(file_exists($_FILES['uploaded_file']['tmp_name'])){$file_target_location = $target_dir . $file_name;}
 		else{$file_target_location = "";}
 		move_uploaded_file($_FILES["uploaded_file"]["tmp_name"], $file_target_location);
 		

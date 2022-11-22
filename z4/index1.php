@@ -8,7 +8,8 @@ if (!isset($_SESSION['loggedin']))
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="pl" lang="pl">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="fonts/fontawesome/fontawesome/css/all.css">
 </head>
 <BODY>
 	<script type = "text/javascript">
@@ -24,86 +25,30 @@ if (!isset($_SESSION['loggedin']))
 	
 	<?php
 		error_reporting(0);
+		
+		$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD
+		if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
+		
 		echo $_SESSION['username']; //informacja o tym kto jest zalogowany
 		date_default_timezone_set('Europe/Warsaw');
 
-		$ipaddress = $_SERVER["REMOTE_ADDR"];
-		$json = file_get_contents ("http://ipinfo.io/{$ipaddress}/geo");
-		$details = json_decode ($json); //informacje na podstawie adresu ip goscia
-		$loc = $details -> loc; //informacja o lokalizacji
-		$datetime = date('Y-m-d H:i:s');
-		function get_browser_name() { 
-		  $user_agent = $_SERVER['HTTP_USER_AGENT'];
-		  $name = 'Unknown';
-		  if(preg_match('/Opera/i',$user_agent)) {
-			$name = 'Opera';
-		  }elseif(preg_match('/Edg/i',$user_agent)) {
-			$name = 'Edge';
-		  }elseif(preg_match('/Chrome/i',$user_agent)) {
-			$name = 'Chrome';
-		  }elseif(preg_match('/Safari/i',$user_agent)) {
-			$name = 'Safari';
-		  }elseif(preg_match('/Firefox/i',$user_agent)) {
-			$name = 'Mozilla Firefox';
-		  }elseif (strpos($user_agent, 'MSIE') || strpos($user_agent, 'Trident/7')) {
-			$name =  'Internet Explorer';
-		  }
-			return $name;
-		}
-		$browser_name = get_browser_name(); //nazwa przegladarki
-
-		$screen_width = "<script>document.write(screen.width);</script>";
-		$screen_height = "<script>document.write(screen.height);</script>";
-		$browser_width = "<script>document.write(window.innerWidth);</script>";
-		$browser_height = "<script>document.write(window.innerHeight);</script>";
-		$screen_colors = "<script>document.write(screen.colorDepth);</script>";
-		$cookies_enabled = "<script>document.write(navigator.cookieEnabled);</script>";
-		$java_enabled = "<script>document.write(navigator.javaEnabled());</script>";
-		$browser_language = "<script>document.write(navigator.language);</script>";
-
-		$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD	
-		if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
-
 		$username =  $_SESSION['username'];
-		$result = mysqli_query($link, "SELECT * FROM goscieportalu"); // wiersze, w którym login=login z formularza
-		$rekord = mysqli_fetch_array($result); // wiersza z BD, struktura zmiennej jak w BD
-		
-		//aktualne dane odwiedzającego
-		echo "<table border='1'>
-		<tr>
-		<th>ipaddress</th>
-		<th>datetime</th>
-		<th>country</th>
-		<th>city</th>
-		<th>google maps</th>
-		<th>browser</th>
-		<th>screen resolution</th>
-		<th>browser resolution</th>
-		<th>colors</th>
-		<th>cookies enabled</th>
-		<th>java enabled</th>
-		<th>language</th>
-		</tr>";
-			echo "<tr>";
-			echo "<td>" .$ipaddress."</td>";
-			echo "<td>" .$datetime."</td>";
-			echo "<td>" .$details -> country."</td>";
-			echo "<td>" .$details -> city."</td>";
-			echo "<td>"."<a href='https://www.google.pl/maps/place/$loc' target='_blank'>LINK</a>"."</td>";
-			echo "<td>" .$browser_name."</td>";
-			echo "<td>" .$screen_width."x".$screen_height."</td>";
-			echo "<td>" .$browser_width."x".$browser_height."</td>";
-			echo "<td>" .$screen_colors."</td>";
-			echo "<td>" .$cookies_enabled."</td>";
-			echo "<td>" .$java_enabled."</td>";
-			echo "<td>" .$browser_language."</td>";
-		echo "</table><br />";
 		
 		$main_dir = $username . '/'; //katalog macierzysty zalogowanego uzytkownika
-		?>
+		//$main_dir = $username; //katalog macierzysty zalogowanego uzytkownika
+		
+		if(!isset($_SESSION['current_dir'])){
+			$_SESSION['current_dir'] = $main_dir;
+		}
+		else{
+			echo "<br>Aktualny katalog: " . $_SESSION['current_dir'] . "<br><br>";
+		}
+	?>
 		
 		<br><form action="index1.php" method="post">
-		<input type="submit" name="makedir" value="Nowy katalog" />
+				<button type="submit" name="makedir" style="border:none;background-color:#ffffff;">
+                    <i class="fa-solid fa-folder-plus" type="submit" name="makedir" style="font-size:34px;"></i>
+                </button>
 		</form><br>
 				
 		<?php
@@ -117,43 +62,73 @@ if (!isset($_SESSION['loggedin']))
 							<input type='submit' value='Send'/>
 						</form><br>";
 			}
-			
-		//lista katalogow uzytkownika
-		if(!isset($_SESSION['current_dir'])){
-			$_SESSION['current_dir'] = $main_dir;
-		}
-		else{
-			echo "Aktualny katalog: " . $_SESSION['current_dir'] . "<br>";
-		}
+		?>
 		
-		echo "<form action='addfile.php' method='post' enctype='multipart/form-data'>
-					Nowy plik: <input type='file' name='uploaded_file' id='uploaded_file'><br>
-					<input type='submit' value='Send'/>
-			  </form>";
+		<label for="uploaded_file">
+			<i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:28px;"></i>
+		</label>
 		
-		echo "<br>Lista katalogów użytkownika: <br>";
+		<form action='addfile.php' method='post' enctype='multipart/form-data'>
+			<input type='file' name='uploaded_file' id='uploaded_file' style='display:none;'>
+			<input type='submit' name='addfile' id='addfile'><br>
+		</form>
 		
-        $main_dir_content = array_filter(glob($main_dir . "*")); //wszystko, co znajduje sie w katalogu
+		<br>Lista katalogów użytkownika:
+		<br><br>
+		<form action='levelup.php' method='post'>
+				<button type="submit" name="levelup" style="border:none;background-color:#ffffff;">
+                    <i class="fa-solid fa-circle-arrow-left" type="submit" name="levelup" style="font-size:28px;"></i>
+                </button>
+		</form>
 		
-		echo "<a href ='movedir.php?current_dir=$main_dir'>" . $main_dir . "<a><br>";
-		foreach ($main_dir_content as $content) {
-			if(is_dir($content)){
-				echo "&ensp;<a href ='movedir.php?current_dir=$content'>" . $content . "</a><br>"; //&ensp - duza spacja		
+		<?php
+		$current_dir = $_SESSION['current_dir'];
+        $main_dir_content = array_filter(glob($main_dir . "*")); //wszystko, co znajduje sie w katalogu glownym
+		echo "<a href ='movedir.php?current_dir=$main_dir'>" . $main_dir . "<a><br>"; //glowny katalog uzytkownika
+		foreach ($main_dir_content as $content) { //kazdy element katalogu glownego
+			if(is_dir($content)){ //jesli element jest katalogiem
+				echo "&ensp;<a href ='movedir.php?current_dir=$content/'>" . $content . '/' . "</a>"; //&ensp - duza spacja, link do pobrania pliku
+				echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$content'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza
 			}
-			else{
-				echo "&ensp;" . $content . "<br>";			
+			else{ //jesli element nie jest katalogiem (plik)
+				echo "&ensp;<a href='$content' download>" . $content . "</a>"; //link do pobrania pliku
+				$file_extension = substr($content, strpos($content, ".") + 1); //pobranie rozszerzenia
+				if($file_extension == "png" || $file_extension == "jpg" || $file_extension == "jpeg" || $file_extension == "gif"){
+						$media_icon = 'fa-regular fa-image'; //ikona - obraz
+				}
+				if($file_extension == "mp4"){
+						$media_icon = 'fa-solid fa-video'; //ikona - wideo
+				}
+				if($file_extension == "mp3"){
+						$media_icon = 'fa-solid fa-volume-high'; //ikona - audio
+				}
+				echo "&nbsp;<a href='$content'><i class='$media_icon' style='font-size:14px;'></i></a>";
+				echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$content'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza							
 			}
 			
-			if(count(glob($content . '/*')) !== 0){
+			if(count(glob($content . '/*')) !== 0){ //jesli podkatalog nie jest pusty
 				$sub_dir_content = array_filter(glob($content . '/*')); //wszystko, co znajduje sie w podkatalogu
 				foreach ($sub_dir_content as $sub_content) {
-					echo "&ensp;&ensp;" . $sub_content . "<br>";
+					echo "&ensp;&ensp;<a href='$sub_content' download>" . $sub_content . "</a>"; //link do pobrania pliku
+					$file_extension = substr($sub_content, strpos($sub_content, ".") + 1); //pobranie rozszerzenia
+					if($file_extension == "png" || $file_extension == "jpg" || $file_extension == "jpeg" || $file_extension == "gif"){
+						$media_icon = 'fa-regular fa-image'; //ikona - obraz
+					}
+					if($file_extension == "mp4"){
+						$media_icon = 'fa-solid fa-video'; //ikona - wideo
+					}
+					if($file_extension == "mp3"){
+						$media_icon = 'fa-solid fa-volume-high'; //ikona - audio
+					}
+					echo "&nbsp;<a href='$sub_content'><i class='$media_icon' style='font-size:14px;'></i></a>";
+					echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$sub_content'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza	
 				}
 			}
-		
 		}
-			
 		
+		//<i class="fa-solid fa-video"></i>
+		//<i class="fa-solid fa-volume-high"></i>
+			
 		//informacja o ostatniej probie wlamania sie na konto
 		$breakins = mysqli_query($link, "SELECT * FROM break_ins WHERE username='$username' ORDER BY datetime DESC LIMIT 1"); // wiersze, w którym login=login z formularza
 		foreach ($breakins as $row) {
@@ -163,7 +138,8 @@ if (!isset($_SESSION['loggedin']))
 		}
 		
 		mysqli_close($link);
-	?>
+		?>
+		
 	<br>
 	<a href ='index.php'>Strona główna zadania</a><br />
 	<a href ='logout.php'>Wyloguj</a><br />
