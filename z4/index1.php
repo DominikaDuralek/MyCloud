@@ -45,14 +45,11 @@ if (!isset($_SESSION['loggedin']))
 		if(!isset($_SESSION['current_dir'])){
 			$_SESSION['current_dir'] = $main_dir;
 		}
-		else{
-			echo "<br>Aktualny katalog: " . $_SESSION['current_dir'] . "<br><br>";
-		}
 		
 		if($_SESSION['current_dir'] == $main_dir){ //jezeli znajdujemy sie w katalogu glownym uzytkownika - mozna tworzyc podkatalogi
 	?>
 		
-			<br><form action="index1.php" method="post">
+			<br><br><form action="index1.php" method="post">
 					<button type="submit" name="makedir" style="border:none;background-color:#ffffff;">
 						<i class="fa-solid fa-folder-plus" type="submit" name="makedir" style="font-size:34px;"></i>
 					</button>
@@ -73,10 +70,11 @@ if (!isset($_SESSION['loggedin']))
 		?>
 		
 		<form action="addfile.php" enctype="multipart/form-data" method="post">
-			<input type="file" name="uploaded_file" size="10"/><br>
+			<input type="file" name="uploaded_file"/><br>
 			<button type="submit" name="addfile" style="border:none;background-color:#ffffff;"/><i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:34px;"></i></button>
 		</form><br>
 		
+		<?php echo "<br>Lokalizacja: " . $_SESSION['current_dir'] . "<br>"; ?>
 		
 		<br>Lista katalogów użytkownika:
 		<br><br>
