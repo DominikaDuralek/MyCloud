@@ -36,6 +36,7 @@ if (!isset($_SESSION['loggedin']))
 		if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
 		
 		echo $_SESSION['username']; //informacja o tym kto jest zalogowany
+		echo "<br>-------------------------------------------------------------------";
 		date_default_timezone_set('Europe/Warsaw');
 
 		$username =  $_SESSION['username'];
@@ -50,10 +51,10 @@ if (!isset($_SESSION['loggedin']))
 	?>
 		
 			<br><br><form action="index1.php" method="post">
-					<button type="submit" name="makedir" style="border:none;background-color:#ffffff;">
+					Nowy katalog: <button type="submit" name="makedir" style="border:none;background-color:#ffffff;">
 						<i class="fa-solid fa-folder-plus" type="submit" name="makedir" style="font-size:34px;"></i>
 					</button>
-			</form><br>
+			</form>
 					
 		<?php
 		}
@@ -65,18 +66,18 @@ if (!isset($_SESSION['loggedin']))
 					echo "Nazwa nowego katalogu<form action='newdir.php' method='post'>
 							<input type='text' name='dir_name' maxlength='20' size='20'>
 								<input type='submit' value='Send'/>
-							</form><br>";
+							</form>";
 				}
 		?>
 		
-		<form action="addfile.php" enctype="multipart/form-data" method="post">
+		<br><br><form action="addfile.php" enctype="multipart/form-data" method="post">
 			<input type="file" name="uploaded_file"/><br>
-			<button type="submit" name="addfile" style="border:none;background-color:#ffffff;"/><i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:34px;"></i></button>
+			Wyślij wybrany plik: <button type="submit" name="addfile" style="border:none;background-color:#ffffff;"/><i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:34px;"></i></button>
 		</form><br>
 		
 		<?php echo "<br>Lokalizacja: " . $_SESSION['current_dir'] . "<br>"; ?>
 		
-		<br>Lista katalogów użytkownika:
+		<br><b>Lista katalogów użytkownika:</b>
 		<br><br>
 		
 		<?php if($_SESSION['current_dir'] != $main_dir){ //jezeli nie znajdujemy sie w katalogu glownym uzytkownika - mozna klinkac 'levelup'
@@ -106,37 +107,37 @@ if (!isset($_SESSION['loggedin']))
 					$file_name = substr($file_name, strpos($file_name, "/") + 1);	
 				}
 				echo "&ensp;<a href='$content' download>" . $file_name . "</a>"; //link do pobrania pliku
+				echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$content'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza	
 				$file_extension = substr($content, strpos($content, ".") + 1); //pobranie rozszerzenia
 				if($file_extension == "png" || $file_extension == "jpg" || $file_extension == "jpeg" || $file_extension == "gif"){
-						$media_icon = 'fa-regular fa-image'; //ikona - obraz
+						//$media_icon = 'fa-regular fa-image'; //ikona - obraz
+						echo "&ensp;<img src='$content'><br>";
 				}
-				if($file_extension == "mp4"){
-						$media_icon = 'fa-solid fa-video'; //ikona - wideo
+				else if($file_extension == "mp4"){
+						//$media_icon = 'fa-solid fa-video'; //ikona - wideo
+						echo "<video controls muted'><source src='$content' type='video/mp4'></video><br>";
 				}
-				if($file_extension == "mp3"){
-						$media_icon = 'fa-solid fa-volume-high'; //ikona - audio
+				else if($file_extension == "mp3"){
+						//$media_icon = 'fa-solid fa-volume-high'; //ikona - audio
+						echo "<audio controls><source src='$content' type='audio/mpeg'></audio><br>";
 				}
-				echo "&nbsp;<a href='$content'><i class='$media_icon' style='font-size:14px;'></i></a>";
-				echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$content'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza							
+				else{
+					echo "&nbsp;Podgląd pliku: <a href='$content'><i class='fa-regular fa-file'></i></a>";
+				}						
 			}
 		}
-		
-		//<i class="fa-solid fa-video"></i>
-		//<i class="fa-solid fa-volume-high"></i>
 			
 		//informacja o ostatniej probie wlamania sie na konto
 		$breakins = mysqli_query($link, "SELECT * FROM break_ins WHERE username='$username' ORDER BY datetime DESC LIMIT 1"); // wiersze, w którym login=login z formularza
 		foreach ($breakins as $row) {
 			if($row['datetime'] != ""){
-				echo "<p style='color: red';>Ostatnia próba włamania: " . $row['datetime'] . " ip: " . $row['ip'] . "</p>";			
+				echo "<br><p style='color: red';>Ostatnia próba włamania:<br>DATA: " . $row['datetime'] . "<br>IP: " . $row['ip'] . "</p>";			
 			}
 		}
 		
 		mysqli_close($link);
 		?>
 		
-	<br>
-	<a href ='index.php'>Strona główna zadania</a><br />
-	<a href ='logout.php'>Wyloguj</a><br />
+	<br><a href ='logout.php'>Wyloguj</a><br />
 </BODY>
 </HTML>
