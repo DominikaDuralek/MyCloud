@@ -10,6 +10,12 @@ if (!isset($_SESSION['loggedin']))
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<link rel="stylesheet" href="fonts/fontawesome/fontawesome/css/all.css">
+	<style>
+		i:hover {
+			color: blue;
+			cursor: pointer;
+		}
+	</style>
 </head>
 <BODY>
 	<script type = "text/javascript">
@@ -35,7 +41,6 @@ if (!isset($_SESSION['loggedin']))
 		$username =  $_SESSION['username'];
 		
 		$main_dir = $username . '/'; //katalog macierzysty zalogowanego uzytkownika
-		//$main_dir = $username; //katalog macierzysty zalogowanego uzytkownika
 		
 		if(!isset($_SESSION['current_dir'])){
 			$_SESSION['current_dir'] = $main_dir;
@@ -60,21 +65,18 @@ if (!isset($_SESSION['loggedin']))
 					make_dir();
 				}
 				function make_dir() { //funkcja do tworzenia nowego katalogu
-					echo "<br>Nazwa nowego katalogu<form action='newdir.php' method='post'>
+					echo "Nazwa nowego katalogu<form action='newdir.php' method='post'>
 							<input type='text' name='dir_name' maxlength='20' size='20'>
 								<input type='submit' value='Send'/>
 							</form><br>";
 				}
 		?>
 		
-		<label for="uploaded_file">
-			<i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:28px;"></i>
-		</label>
+		<form action="addfile.php" enctype="multipart/form-data" method="post">
+			<input type="file" name="uploaded_file" size="10"/><br>
+			<button type="submit" name="addfile" style="border:none;background-color:#ffffff;"/><i class="fa-solid fa-cloud-arrow-up" name="addfile" style="font-size:34px;"></i></button>
+		</form><br>
 		
-		<form action='addfile.php' method='post' enctype='multipart/form-data'>
-			<input type='file' name='uploaded_file' id='uploaded_file' style='display:none;'>
-			<input type='submit' name='addfile' id='addfile'><br>
-		</form>
 		
 		<br>Lista katalogów użytkownika:
 		<br><br>
@@ -83,7 +85,7 @@ if (!isset($_SESSION['loggedin']))
 		?>
 			<form action='levelup.php' method='post'>
 					<button type="submit" name="levelup" style="border:none;background-color:#ffffff;">
-						<i class="fa-solid fa-circle-arrow-left" type="submit" name="levelup" style="font-size:28px;"></i>
+						<i class="fa-solid fa-reply" style="font-size:24px;"></i>
 					</button>
 			</form>
 		<?php
@@ -94,11 +96,18 @@ if (!isset($_SESSION['loggedin']))
 		echo "<a href ='movedir.php?current_dir=$current_dir'>" . $current_dir . "<a><br>"; //glowny katalog uzytkownika
 		foreach ($current_dir_content as $content) { //kazdy element katalogu glownego
 			if(is_dir($content)){ //jesli element jest katalogiem
-				echo "&ensp;<a href ='movedir.php?current_dir=$content/'>" . $content . '/' . "</a>"; //&ensp - duza spacja, link do pobrania pliku
+				$dir_name = substr($content, strpos($content, "/") + 1);
+				echo "&ensp;<a href ='movedir.php?current_dir=$content/'>" . $dir_name . '/' . "</a>"; //&ensp - duza spacja, link do pobrania pliku
 				echo "&nbsp&nbsp;<a href='removecontent.php?content_to_remove=$content/'><i class='fa-regular fa-trash-can' style='font-size:14px;'></i></a><br>"; //ikonka kosza
 			}
 			else{ //jesli element nie jest katalogiem (plik)
-				echo "&ensp;<a href='$content' download>" . $content . "</a>"; //link do pobrania pliku
+				if($current_dir == $main_dir){ //w glownym katalogu
+					$file_name = substr($content, strpos($content, "/") + 1);	
+				}else{ //w podkatalogach
+					$file_name = substr($content, strpos($content, "/") + 1);	
+					$file_name = substr($file_name, strpos($file_name, "/") + 1);	
+				}
+				echo "&ensp;<a href='$content' download>" . $file_name . "</a>"; //link do pobrania pliku
 				$file_extension = substr($content, strpos($content, ".") + 1); //pobranie rozszerzenia
 				if($file_extension == "png" || $file_extension == "jpg" || $file_extension == "jpeg" || $file_extension == "gif"){
 						$media_icon = 'fa-regular fa-image'; //ikona - obraz
