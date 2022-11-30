@@ -32,7 +32,7 @@ if (!isset($_SESSION['loggedin']))
 	<?php
 		error_reporting(0);
 		
-		$link = mysqli_connect('mariadb106.server701675.nazwa.pl', 'server701675_domdur1', '6D6zB4WuURKzU@h', 'server701675_domdur1'); // połączenie z BD
+		$link = mysqli_connect('', '', '', ''); // połączenie z BD
 		if(!$link) { echo"Błąd: ". mysqli_connect_errno()." ".mysqli_connect_error(); } // obsługa błędu połączenia z BD
 		
 		echo $_SESSION['username']; //informacja o tym kto jest zalogowany
