@@ -6,7 +6,7 @@
 	
 	if (file_exists($_FILES["uploaded_file"]["tmp_name"]))
 	{
-		$dbhost="mariadb106.server701675.nazwa.pl"; $dbuser="server701675_domdur1"; $dbpassword="6D6zB4WuURKzU@h"; $dbname="server701675_domdur1";
+		$dbhost=""; $dbuser=""; $dbpassword=""; $dbname="";
 		$connection = mysqli_connect($dbhost, $dbuser, $dbpassword, $dbname); //polaczenie z BD
 		if (!$connection)
 		{
